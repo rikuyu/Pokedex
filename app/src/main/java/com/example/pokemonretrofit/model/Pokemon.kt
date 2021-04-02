@@ -1,5 +1,7 @@
 package com.example.pokemonretrofit.model
 
+import java.io.Serializable
+
 data class Pokemon(
     var id: Int = 0,
     var num: String? = null,
@@ -18,4 +20,4 @@ data class Pokemon(
     var weaknesses: List<String>? = null,
     var next_evolution: List<Evolution>? = null,
     var prev_evolution: List<Evolution>? = null
-)
+): Serializable
