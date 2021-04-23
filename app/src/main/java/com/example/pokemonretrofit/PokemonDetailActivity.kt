@@ -6,34 +6,33 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.pokemonretrofit.databinding.ActivityPokemonDetailBinding
 import com.example.pokemonretrofit.model.DetailPokemon
-import kotlinx.android.synthetic.main.activity_pokemon_detail.*
 
 class PokemonDetailActivity : AppCompatActivity() {
 
-    lateinit var imgPokemon: ImageView
+    lateinit var binding: ActivityPokemonDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pokemon_detail)
+        binding = ActivityPokemonDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val pokemon = intent.getSerializableExtra("POKEMON")
-        val pokemonList = intent.getStringArrayListExtra("ALL")
 
-        imgPokemon = findViewById(R.id.img_pokemon)
 
         if (pokemon is DetailPokemon) {
-            num_pokemon.text = pokemon.num
+           binding.numPokemon.text = pokemon.num
             Glide.with(this).load(pokemon.img)
                 .apply(RequestOptions().placeholder(R.drawable.ic_image))
                 .apply(RequestOptions().override(500, 500))
-                .into(imgPokemon);
-            name_pokemon.text = pokemon.name
-            height_pokemon.text = pokemon.height
-            weight_pokemon.text = pokemon.weight
+                .into(binding.imgPokemon);
+            binding.namePokemon.text = pokemon.name
+            binding.heightPokemon.text = pokemon.height
+            binding.weightPokemon.text = pokemon.weight
         }
 
-        back_btn.setOnClickListener {
+        binding.backBtn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }

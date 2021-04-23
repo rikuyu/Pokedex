@@ -8,13 +8,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokemonretrofit.adapter.PokemonAdapter
+import com.example.pokemonretrofit.databinding.ActivityMainBinding
 import com.example.pokemonretrofit.model.DetailPokemon
 import com.example.pokemonretrofit.model.Pokemon
 import com.example.pokemonretrofit.repository.Repository
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var recyclerView: RecyclerView
+
     private lateinit var pokemonAdapter: PokemonAdapter
+    private lateinit var binding: ActivityMainBinding
 
     private val TAG = "retrofit"
 
@@ -23,7 +25,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val repository = Repository()
         val viewModelFactory = MainViewModelFactory(repository)
@@ -31,15 +34,14 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getPokemon()
 
-        recyclerView = findViewById(R.id.recycler_view)
-        recyclerView.layoutManager =
+        binding.recyclerView.layoutManager =
             GridLayoutManager(this, 3, RecyclerView.VERTICAL, false)
 
         viewModel.pokemons.observe(this, { response ->
             if (response.isSuccessful) {
                 response.body()!!.pokemon.let { pokemonList = it }
                 pokemonAdapter = PokemonAdapter(this, pokemonList ?: emptyList())
-                recyclerView.adapter = pokemonAdapter
+                binding.recyclerView.adapter = pokemonAdapter
                 Log.d(TAG, "onCreate:" + response.body()?.pokemon)
 
                 pokemonAdapter.setOnPokemonClickListener(
@@ -53,10 +55,6 @@ class MainActivity : AppCompatActivity() {
                                 PokemonDetailActivity::class.java
                             )
                             intent.putExtra("POKEMON", pokemon)
-                            intent.putStringArrayListExtra(
-                                "ALL",
-                                pokemonList as ArrayList<String?>?
-                            )
                             startActivity(intent)
                         }
                     }
